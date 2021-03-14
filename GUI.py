@@ -3,11 +3,12 @@ import numpy as np
 # from PyQt4.QtCore import *
 # from PyQt4.QtGui import *
 from PyQt5 import QtCore
+import argparse
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-#from PyQt4 import QtTest
+# from PyQt4 import QtTest
 
 import pyqtgraph as pg
 import sys
@@ -17,34 +18,35 @@ from webcam import Webcam
 from video import Video
 from interface import waitKey, plotXY
 
+
 class Communicate(QObject):
     closeApp = pyqtSignal()
     
     
 class GUI(QMainWindow, QThread):
     def __init__(self):
-        super(GUI,self).__init__()
+        super(GUI, self).__init__()
         self.initUI()
         self.webcam = Webcam()
         self.video = Video()
-        self.input = self.webcam
-        self.dirname = ""
+        self.input = self.video
+        self.vid_path = ""
         print("Input: webcam")
         self.statusBar.showMessage("Input: webcam",5000)
         self.btnOpen.setEnabled(False)
         self.process = Process()
         self.status = False
-        self.frame = np.zeros((10,10,3),np.uint8)
-        #self.plot = np.zeros((10,10,3),np.uint8)
+        self.frame = np.zeros((10, 10, 3), np.uint8)
+        # self.plot = np.zeros((10,10,3),np.uint8)
         self.bpm = 0
-        
+
     def initUI(self):
     
-        #set font
+        # set font
         font = QFont()
         font.setPointSize(16)
         
-        #widgets
+        # widgets
         self.btnStart = QPushButton("Start", self)
         self.btnStart.move(440,520)
         self.btnStart.setFixedWidth(200)
@@ -68,23 +70,23 @@ class GUI(QMainWindow, QThread):
         self.cbbInput.move(20,520)
         self.cbbInput.setFont(font)
         self.cbbInput.activated.connect(self.selectInput)
-        #-------------------
+        # -------------------
         
-        self.lblDisplay = QLabel(self) #label to show frame from camera
-        self.lblDisplay.setGeometry(10,10,640,480)
+        self.lblDisplay = QLabel(self) # label to show frame from camera
+        self.lblDisplay.setGeometry(10, 10, 640, 480)
         self.lblDisplay.setStyleSheet("background-color: #000000")
         
-        self.lblROI = QLabel(self) #label to show face with ROIs
-        self.lblROI.setGeometry(660,10,200,200)
+        self.lblROI = QLabel(self) # label to show face with ROIs
+        self.lblROI.setGeometry(660, 10, 200, 200)
         self.lblROI.setStyleSheet("background-color: #000000")
         
-        self.lblHR = QLabel(self) #label to show HR change over time
-        self.lblHR.setGeometry(900,20,300,40)
+        self.lblHR = QLabel(self) # label to show HR change over time
+        self.lblHR.setGeometry(900, 20, 300, 40)
         self.lblHR.setFont(font)
         self.lblHR.setText("Frequency: ")
         
-        self.lblHR2 = QLabel(self) #label to show stable HR
-        self.lblHR2.setGeometry(900,70,300,40)
+        self.lblHR2 = QLabel(self) # label to show stable HR
+        self.lblHR2.setGeometry(900, 70, 300, 40)
         self.lblHR2.setFont(font)
         self.lblHR2.setText("Heart rate: ")
         
@@ -114,36 +116,32 @@ class GUI(QMainWindow, QThread):
         self.timer = pg.QtCore.QTimer()
         self.timer.timeout.connect(self.update)
         self.timer.start(200)
-        
-        
+
         self.statusBar = QStatusBar()
         self.statusBar.setFont(font)
         self.setStatusBar(self.statusBar)
         
-        #event close
+        # event close
         self.c = Communicate()
         self.c.closeApp.connect(self.close)
         
-        #event change combobox index
+        # event change combobox index
         
-        #config main window
+        # config main window
         self.setGeometry(100,100,1160,640)
-        #self.center()
+        # self.center()
         self.setWindowTitle("Heart rate monitor")
         self.show()
         
-        
     def update(self):
-        #z = np.random.normal(size=1)
-        #u = np.random.normal(size=1)
+        # z = np.random.normal(size=1)
+        # u = np.random.normal(size=1)
         self.signal_Plt.clear()
         self.signal_Plt.plot(self.process.samples[20:],pen='g')
 
         self.fft_Plt.clear()
         self.fft_Plt.plot(np.column_stack((self.process.freqs, self.process.fft)), pen = 'g')
-        
-        
-   
+
     def center(self):
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
@@ -151,8 +149,8 @@ class GUI(QMainWindow, QThread):
         self.move(qr.topLeft())
         
     def closeEvent(self, event):
-        reply = QMessageBox.question(self,"Message", "Are you sure want to quit",
-            QMessageBox.Yes|QMessageBox.No, QMessageBox.Yes)
+        reply = QMessageBox.question(self, "Message", "Are you sure want to quit",
+                                     QMessageBox.Yes|QMessageBox.No, QMessageBox.Yes)
         if reply == QMessageBox.Yes:
             event.accept()
             self.input.stop()
@@ -166,14 +164,13 @@ class GUI(QMainWindow, QThread):
             self.input = self.webcam
             print("Input: webcam")
             self.btnOpen.setEnabled(False)
-            #self.statusBar.showMessage("Input: webcam",5000)
+            # self.statusBar.showMessage("Input: webcam",5000)
         elif self.cbbInput.currentIndex() == 1:
             self.input = self.video
             print("Input: video")
             self.btnOpen.setEnabled(True)
-            #self.statusBar.showMessage("Input: video",5000)
-        
-    
+            # self.statusBar.showMessage("Input: video",5000)
+
     def mousePressEvent(self, event):
         self.c.closeApp.emit()    
     
@@ -206,8 +203,8 @@ class GUI(QMainWindow, QThread):
             sys.exit()
     
     def openFileDialog(self):
-        self.dirname = QFileDialog.getOpenFileName(self, 'OpenFile',r"C:\Users\uidh2238\Desktop\test videos")
-        #self.statusBar.showMessage("File name: " + self.dirname,5000)
+        self.vid_path = QFileDialog.getOpenFileName(self, 'OpenFile', "/home/dspip/HeartRate_Apps/demos")[0]
+        # self.statusBar.showMessage("File name: " + self.vid_path,5000)
     
     def reset(self):
         self.process.reset()
@@ -216,62 +213,55 @@ class GUI(QMainWindow, QThread):
 
     @QtCore.pyqtSlot()
     def main_loop(self):
-        frame = self.input.get_frame()
 
+        resized, frame = self.input.get_frame()
         self.process.frame_in = frame
         self.process.run()
-        
-        cv2.imshow("Processed", frame)
-        
-        self.frame = self.process.frame_out #get the frame to show in GUI
-        self.f_fr = self.process.frame_ROI #get the face to show in GUI
-        #print(self.f_fr.shape)
-        self.bpm = self.process.bpm #get the bpm change over the time
-        
+        # self.frame = self.process.frame_out #get the frame to show in GUI
+        self.frame = cv2.resize(self.process.frame_out, (640, 480)) # resized #the frame to show in GUI
+        self.f_fr = self.process.frame_ROI  # get the face to show in GUI
+        self.bpm = self.process.bpm  # get the bpm change over the time
+
         self.frame = cv2.cvtColor(self.frame, cv2.COLOR_RGB2BGR)
-        cv2.putText(self.frame, "FPS "+str(float("{:.2f}".format(self.process.fps))),
-                       (20,460), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 255),2)
-        img = QImage(self.frame, self.frame.shape[1], self.frame.shape[0], 
-                        self.frame.strides[0], QImage.Format_RGB888)
+        cv2.putText(self.frame, "FPS "+str(float("{:.2f}".format(self.process.fps))), (20,460), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 255, 255),2)
+        img = QImage(self.frame, self.frame.shape[1], self.frame.shape[0], self.frame.strides[0], QImage.Format_RGB888)
         self.lblDisplay.setPixmap(QPixmap.fromImage(img))
-        
-        self.f_fr = cv2.cvtColor(self.f_fr, cv2.COLOR_RGB2BGR)
-        #self.lblROI.setGeometry(660,10,self.f_fr.shape[1],self.f_fr.shape[0])
-        self.f_fr = np.transpose(self.f_fr,(0,1,2)).copy()
-        f_img = QImage(self.f_fr, self.f_fr.shape[1], self.f_fr.shape[0], 
-                       self.f_fr.strides[0], QImage.Format_RGB888)
+
+        # self.f_fr = cv2.cvtColor(self.f_fr, cv2.COLOR_RGB2BGR)
+        self.f_fr = cv2.cvtColor(self.f_fr, cv2.COLOR_BGR2RGB)
+        self.f_fr = cv2.resize(self.f_fr, (200, 200))
+        self.lblROI.setGeometry(660, 10, self.f_fr.shape[1], self.f_fr.shape[0])
+        # self.f_fr = np.transpose(self.f_fr,(0,1,2)).copy()
+        f_img = QImage(self.f_fr, self.f_fr.shape[1], self.f_fr.shape[0], self.f_fr.strides[0], QImage.Format_RGB888)
         self.lblROI.setPixmap(QPixmap.fromImage(f_img))
-        
+
         self.lblHR.setText("Freq: " + str(float("{:.2f}".format(self.bpm))))
-        
+
         if self.process.bpms.__len__() >50:
-            if(max(self.process.bpms-np.mean(self.process.bpms))<5): #show HR if it is stable -the change is not over 5 bpm- for 3s
+            if max(self.process.bpms - np.mean(self.process.bpms)) < 5:
+                # show HR if it is stable -the change is not over 5 bpm- for 3s
                 self.lblHR2.setText("Heart rate: " + str(float("{:.2f}".format(np.mean(self.process.bpms)))) + " bpm")
 
-        #self.lbl_Age.setText("Age: "+str(self.process.age))
-        #self.lbl_Gender.setText("Gender: "+str(self.process.gender))
-        #self.make_bpm_plot()#need to open a cv2.imshow() window to handle a pause 
-        #QtTest.QTest.qWait(10)#wait for the GUI to respond
-        self.key_handler()  #if not the GUI cant show anything
+        self.key_handler()  # if not the GUI cant show anything
 
     def run(self, input):
         self.reset()
         input = self.input
-        self.input.dirname = self.dirname
-        if self.input.dirname == "" and self.input == self.video:
+        self.input.vid_path = self.vid_path
+        if self.input.vid_path == "" and self.input == self.video:
             print("choose a video first")
-            #self.statusBar.showMessage("choose a video first",5000)
+            # self.statusBar.showMessage("choose a video first",5000)
             return
-        if self.status == False:
+        if not self.status:
             self.status = True
             input.start()
             self.btnStart.setText("Stop")
             self.cbbInput.setEnabled(False)
             self.btnOpen.setEnabled(False)
             self.lblHR2.clear()
-            while self.status == True:
+            while self.status:
                 self.main_loop()
-        elif self.status == True:
+        elif self.status:
             self.status = False
             input.stop()
             self.btnStart.setText("Start")
@@ -281,7 +271,15 @@ class GUI(QMainWindow, QThread):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = GUI()
-    while ex.status == True:
+    record = False
+    parser = argparse.ArgumentParser(description='Monitor Heart Rate by tracking manualy selected eye veins and '
+                                     'measuring color changes. ')
+    parser.add_argument('--record', default=False, action='store_true', help="record result in local record.csv")
+    parser.add_argument('--verbose', default=False, action='store_true', help="print tracker bounding box")
+    args = parser.parse_args()
+    ex.process.create_record = args.record
+    ex.process.verbose = args.verbose
+    while ex.status:
         ex.main_loop()
 
     sys.exit(app.exec_())

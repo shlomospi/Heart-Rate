@@ -1,7 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-
+.idea
 # C extensions
 *.so
 
@@ -19,3 +19,9 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+/3sec.mp4
+/16sec.mp4
+*.mp4
+*.csv
+*.xlsm
+old_nogit/
