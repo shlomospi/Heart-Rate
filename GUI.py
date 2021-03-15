@@ -177,9 +177,9 @@ class GUI(QMainWindow, QThread):
     # def make_bpm_plot(self):
     
         # plotXY([[self.process.times[20:],
-                     # self.process.samples[20:]],
+                    # self.process.samples[20:]],
                     # [self.process.freqs,
-                     # self.process.fft]],
+                    # self.process.fft]],
                     # labels=[False, True],
                     # showmax=[False, "bpm"],
                     # label_ndigits=[0, 0],

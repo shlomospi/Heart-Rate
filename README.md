@@ -12,7 +12,7 @@
 - Manually select area of interest within the eye video.
 - Apply Tracker to chosen area and monitor color variation of the selected spot
 - Apply band pass filter with fl = 0.8 Hz and fh = 3 Hz, which are 48 and 180 bpm respectively
-- Average color value of ROI in each frame is calculate pushed to a data buffer which is 200 in length
+- Average color value of ROI in each frame is calculate pushed to a data buffer which is 150 in length
 - Ignore out liars in the measurments.
 - FFT the data buffer. The highest peak is Heart rate
 - Amplify color to make the color variation visible 

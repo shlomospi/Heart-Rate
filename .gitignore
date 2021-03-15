@@ -25,3 +25,4 @@ var/
 *.csv
 *.xlsm
 old_nogit/
+face_detection.py

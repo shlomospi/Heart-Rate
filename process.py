@@ -13,7 +13,7 @@ class Process(object):
         self.frame_ROI = np.zeros((10, 10, 3), np.uint8)
         self.frame_out = np.zeros((10, 10, 3), np.uint8)
         self.samples = []
-        self.buffer_size = 200
+        self.buffer_size = 150
         self.times = [] 
         self.data_buffer = []
         self.fps = 0
@@ -21,7 +21,7 @@ class Process(object):
         self.freqs = []
         self.t0 = time.time()
         self.bpm = 0
-        self.fd = FaceDetection()
+        #self.fd = FaceDetection()
         self.bpms = []
         self.peaks = []
 

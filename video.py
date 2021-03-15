@@ -30,8 +30,7 @@ class Video(object):
             self.valid = True
         except:
             self.shape = None
-    
-    
+
     def stop(self):
         if self.cap is not None:
             self.cap.release()
@@ -55,7 +54,4 @@ class Video(object):
             # col = (0,256,256)
             # cv2.putText(frame, "(Error: Can not load the video)", (65,220), cv2.FONT_HERSHEY_PLAIN, 2, col)
         return resized, frame
-        
-        
-        
-        
+
