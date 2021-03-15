@@ -1,5 +1,5 @@
 # Heart-rate-measurement-using-camera
-[![Alt text](https://github.com/shlomospi/Heart-Rate/blob/master/Example.JPG)]
+![Alt text](https://github.com/shlomospi/Heart-Rate/blob/master/Example.JPG)
 # Abstract
 
 
