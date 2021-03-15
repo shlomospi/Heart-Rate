@@ -1,5 +1,5 @@
 # Heart-rate-measurement-using-camera
-[![Alt text](https://github.com/habom2310/Heart-rate-measurement-using-camera/blob/master/result.JPG)](https://youtu.be/JeQGSEXk_BQ)
+[![Alt text](https://github.com/shlomospi/Heart-Rate/blob/master/Example.JPG)]
 # Abstract
 
 
